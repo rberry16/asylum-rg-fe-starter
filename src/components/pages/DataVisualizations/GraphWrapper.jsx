@@ -91,8 +91,17 @@ function GraphWrapper(props) {
         })
         .then(
           axios.spread((...result) => {
-            console.log(result[0]);
-            console.log(result[1]);
+            // console.log(result[0]);
+            // console.log(result[1]);
+            console.log([
+              {
+                ...result[1].data,
+                citizenshipStatus: [result[0]],
+              },
+            ]);
+            stateSettingCallback(view, office, [
+              { ...result[1].data, citizenshipStatus: [result[0]] },
+            ]);
           })
         )
         .catch(err => {

@@ -73,18 +73,28 @@ function GraphWrapper(props) {
     
     */
 
+    let reqOne = axios.get(
+      `${'https://hrf-asylum-be-b.herokuapp.com/cases/citizenshipSummary'}`
+    );
+    let reqTwo = axios.get(
+      `${'https://hrf-asylum-be-b.herokuapp.com/cases/fiscalSummary'}`
+    );
+
     if (office === 'all' || !office) {
       axios
-        .get(process.env.REACT_APP_API_URI, {
+        .all([reqOne, reqTwo], {
           // mock URL, can be simply replaced by `${Real_Production_URL}/summary` in prod!
           params: {
             from: years[0],
             to: years[1],
           },
         })
-        .then(result => {
-          stateSettingCallback(view, office, test_data); // <-- `test_data` here can be simply replaced by `result.data` in prod!
-        })
+        .then(
+          axios.spread((...result) => {
+            console.log(result[0]);
+            console.log(result[1]);
+          })
+        )
         .catch(err => {
           console.error(err);
         });

@@ -91,14 +91,6 @@ function GraphWrapper(props) {
         })
         .then(
           axios.spread((...result) => {
-            // console.log(result[0]);
-            // console.log(result[1]);
-            console.log([
-              {
-                ...result[1].data,
-                citizenshipStatus: [result[0]],
-              },
-            ]);
             stateSettingCallback(view, office, [
               { ...result[1].data, citizenshipStatus: [result[0]] },
             ]);
@@ -109,7 +101,7 @@ function GraphWrapper(props) {
         });
     } else {
       axios
-        .get(process.env.REACT_APP_API_URI, {
+        .all([reqOne, reqTwo], {
           // mock URL, can be simply replaced by `${Real_Production_URL}/summary` in prod!
           params: {
             from: years[0],
@@ -117,9 +109,13 @@ function GraphWrapper(props) {
             office: office,
           },
         })
-        .then(result => {
-          stateSettingCallback(view, office, test_data); // <-- `test_data` here can be simply replaced by `result.data` in prod!
-        })
+        .then(
+          axios.spread((...result) => {
+            stateSettingCallback(view, office, [
+              { ...result[1].data, citizenshipStatus: [result[0]] },
+            ]);
+          })
+        )
         .catch(err => {
           console.error(err);
         });
